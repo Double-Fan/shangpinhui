@@ -20,6 +20,7 @@
 							>
 								<h3>
 									<a
+										href="javascript:void(0)"
 										:data-categoryName="c1.categoryName"
 										:data-category1Id="c1.categoryId"
 										>{{ c1.categoryName }}</a
@@ -40,6 +41,7 @@
 										<dl class="fore">
 											<dt>
 												<a
+													href="javascript:void(0)"
 													:data-categoryName="c2.categoryName"
 													:data-category2Id="c2.categoryId"
 													>{{ c2.categoryName }}</a
@@ -49,6 +51,7 @@
 												<!-- 三级分类 -->
 												<em v-for="c3 of c2.categoryChild" :key="c3.categoryId">
 													<a
+														href="javascript:void(0)"
 														:data-categoryName="c3.categoryName"
 														:data-category3Id="c3.categoryId"
 														>{{ c3.categoryName }}</a
@@ -64,14 +67,14 @@
 				</transition>
 			</div>
 			<nav class="nav">
-				<a href="###">服装城</a>
-				<a href="###">美妆馆</a>
-				<a href="###">尚品汇超市</a>
-				<a href="###">全球购</a>
-				<a href="###">闪购</a>
-				<a href="###">团购</a>
-				<a href="###">有趣</a>
-				<a href="###">秒杀</a>
+				<a href="javascript:void(0)">服装城</a>
+				<a href="javascript:void(0)">美妆馆</a>
+				<a href="javascript:void(0)">尚品汇超市</a>
+				<a href="javascript:void(0)">全球购</a>
+				<a href="javascript:void(0)">闪购</a>
+				<a href="javascript:void(0)">团购</a>
+				<a href="javascript:void(0)">有趣</a>
+				<a href="javascript:void(0)">秒杀</a>
 			</nav>
 		</div>
 	</div>

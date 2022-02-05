@@ -1,13 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
+import routes from "./routes";
 
-import Home from "@/views/Home";
-import Login from "@/views/Login";
-import Register from "@/views/Register";
-import Search from "@/views/Search";
-
-//重写push
+// 重写push
 let originPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function (location, resolve, reject) {
 	if (resolve && reject) {
@@ -37,31 +33,10 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
 };
 
 export default new VueRouter({
-	routes: [
-		{
-			path: "*",
-			redirect: "./home"
-		},
-		{
-			path: "/home",
-			component: Home,
-			meta: { show: true }
-		},
-		{
-			path: "/login",
-			component: Login,
-			meta: { show: false }
-		},
-		{
-			path: "/register",
-			component: Register,
-			meta: { show: false }
-		},
-		{
-			name: "search",
-			path: "/search/:keyword?",
-			component: Search,
-			meta: { isShow: true }
-		}
-	]
+	// 路由配置
+	routes,
+	// 滚动行为
+	scrollBehavior(to, from, savedPosition) {
+		return { x: 0, y: 0 };
+	}
 });

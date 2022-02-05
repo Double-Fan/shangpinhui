@@ -4,7 +4,7 @@
 		<!-- 路由组件出口的地方 -->
 		<router-view></router-view>
 		<!-- 登录、注册时隐藏 -->
-		<Footer v-show="$route.meta.isShow"></Footer>
+		<Footer v-show="$route.meta.isShowFooter"></Footer>
 	</div>
 </template>
 

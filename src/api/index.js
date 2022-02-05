@@ -16,6 +16,27 @@ export const reqGetFloorList = () => mockRequests.get(`/floor`);
 export const reqGetSearchList = (params) =>
 	requests({
 		url: "/list",
-		method: "post",
+		method: "POST",
 		data: params
+	});
+
+// 获取商品详情  /api/item/{skuId}  GET  参数：skuId
+export const reqGetGoodInfo = (skyId) =>
+	requests({
+		url: `/item/${skyId}`,
+		method: "GET"
+	});
+
+// 将产品添加到购物车中（获取更新某一产品的个数）  /api/cart/addToCart/{skuId}/{skuNum}  POST  参数：skuId、skuNum
+export const reqAddOrUpdateShopCart = (skuId, skuNum) =>
+	requests({
+		url: `/cart/addToCart/${skuId}/${skuNum}`,
+		method: "POST"
+	});
+
+// 获取购物车列表  /api/cart/cartList  GET
+export const reqGetCartList = () =>
+	requests({
+		url: `/cart/cartList`,
+		method: "GET"
 	});

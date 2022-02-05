@@ -9,7 +9,7 @@
 				<div class="bread">
 					<ul class="fl sui-breadcrumb">
 						<li>
-							<a href="#">全部结果</a>
+							<a href="javascript:void(0)">全部结果</a>
 						</li>
 					</ul>
 					<ul class="fl sui-tag">
@@ -50,36 +50,45 @@
 				<div class="details clearfix">
 					<div class="sui-navbar">
 						<div class="navbar-inner filter">
-							<!-- 价格结构 -->
+							<!-- 排序规则 -->
 							<ul class="sui-nav">
-								<li class="active">
-									<a href="#">综合</a>
+								<li :class="{ active: isOne }" @click="changeOrder('1')">
+									<a href="javascript:void(0)"
+										>综合<span
+											v-show="isOne"
+											class="iconfont"
+											:class="{
+												'icon-arrowup': isAsc,
+												'icon-arrowdown': isDesc
+											}"
+										></span
+									></a>
 								</li>
-								<li>
-									<a href="#">销量</a>
-								</li>
-								<li>
-									<a href="#">新品</a>
-								</li>
-								<li>
-									<a href="#">评价</a>
-								</li>
-								<li>
-									<a href="#">价格⬆</a>
-								</li>
-								<li>
-									<a href="#">价格⬇</a>
+								<li :class="{ active: isTwo }" @click="changeOrder('2')">
+									<a href="javascript:void(0)"
+										>价格<span
+											v-show="isTwo"
+											class="iconfont"
+											:class="{
+												'icon-arrowup': isAsc,
+												'icon-arrowdown': isDesc
+											}"
+										></span
+									></a>
 								</li>
 							</ul>
 						</div>
 					</div>
-					<!-- 产品列表 -->
+
+					<!-- 销售产品列表 -->
 					<div class="goods-list">
 						<ul class="yui3-g">
 							<li class="yui3-u-1-5" v-for="good of goodsList" :key="good.id">
 								<div class="list-wrap">
 									<div class="p-img">
-										<a href=""><img :src="good.defaultImg" /></a>
+										<router-link :to="`/detail/${good.id}`">
+											<img :src="good.defaultImg" />
+										</router-link>
 									</div>
 									<div class="price">
 										<strong>
@@ -88,51 +97,36 @@
 										</strong>
 									</div>
 									<div class="attr">
-										<a href="" :title="good.title">{{ good.title }}</a>
+										<a href="javascript:void(0)" :title="good.title">{{
+											good.title
+										}}</a>
 									</div>
 									<div class="commit">
 										<i class="command">已有<span>2000</span>人评价</i>
 									</div>
 									<div class="operate">
-										<a href="#" class="sui-btn btn-bordered btn-danger"
+										<a
+											href="javascript:void(0)"
+											class="sui-btn btn-bordered btn-danger"
 											>加入购物车</a
 										>
-										<a href="#" class="sui-btn btn-bordered">收藏</a>
+										<a href="javascript:void(0)" class="sui-btn btn-bordered"
+											>收藏</a
+										>
 									</div>
 								</div>
 							</li>
 						</ul>
 					</div>
+
 					<!-- 分页 -->
-					<div class="fr page">
-						<div class="sui-pagination clearfix">
-							<ul>
-								<li class="prev disabled">
-									<a href="#">«上一页</a>
-								</li>
-								<li class="active">
-									<a href="#">1</a>
-								</li>
-								<li>
-									<a href="#">2</a>
-								</li>
-								<li>
-									<a href="#">3</a>
-								</li>
-								<li>
-									<a href="#">4</a>
-								</li>
-								<li>
-									<a href="#">5</a>
-								</li>
-								<li class="dotted"><span>...</span></li>
-								<li class="next">
-									<a href="#">下一页»</a>
-								</li>
-							</ul>
-							<div><span>共10页&nbsp;</span></div>
-						</div>
-					</div>
+					<Pagination
+						:pageNo="searchParams.pageNo"
+						:pageSize="searchParams.pageSize"
+						:total="total"
+						:continues="5"
+						@getPageNo="getPageNo"
+					></Pagination>
 				</div>
 			</div>
 		</div>
@@ -162,8 +156,8 @@ export default {
 				categoryName: "",
 				// 关键字
 				keyword: "",
-				// 排序
-				order: "",
+				// 排序  1:desc  初始状态应该是默认且降序
+				order: "1:desc",
 				// 分页起始页
 				pageNo: 1,
 				// 页大小
@@ -176,8 +170,25 @@ export default {
 		};
 	},
 	computed: {
-		...mapState({ searchList: (state) => state.search.searchList }),
-		...mapGetters(["goodsList"])
+		// 获取商品列表
+		...mapGetters(["goodsList"]),
+		// 排序-综合
+		isOne() {
+			return this.searchParams.order.indexOf("1") != -1;
+		},
+		// 排序-价格
+		isTwo() {
+			return this.searchParams.order.indexOf("2") != -1;
+		},
+		// 排序-升降箭头
+		isAsc() {
+			return this.searchParams.order.indexOf("asc") != -1;
+		},
+		isDesc() {
+			return this.searchParams.order.indexOf("desc") != -1;
+		},
+		// 获取search模块展示商品的数量
+		...mapState({ total: (state) => state.search.searchList.total })
 	},
 	watch: {
 		// 监听路由信息
@@ -238,6 +249,27 @@ export default {
 		// 删除商品属性
 		removeProps(index) {
 			this.searchParams.props.splice(index, 1);
+			this.getData();
+		},
+		// 排序操作 flag:标志，综合（1）、价格（2）
+		changeOrder(flag) {
+			// 获取起始状态
+			let originFlag = this.searchParams.order.split(":")[0];
+			let originSort = this.searchParams.order.split(":")[1];
+			// 准备一个新的排序规则
+			let newOrder = "";
+			// 判断是不是同一个标志
+			if (originFlag === flag) {
+				newOrder = `${originFlag}:${originSort == "desc" ? "asc" : "desc"}`;
+			} else {
+				newOrder = `${flag}:desc`;
+			}
+			this.searchParams.order = newOrder;
+			this.getData();
+		},
+		// 自定义事件，获取当前第几页
+		getPageNo(pageNo) {
+			this.searchParams.pageNo = pageNo;
 			this.getData();
 		}
 	},
@@ -489,93 +521,6 @@ export default {
 								}
 							}
 						}
-					}
-				}
-			}
-
-			.page {
-				width: 733px;
-				height: 66px;
-				overflow: hidden;
-				float: right;
-
-				.sui-pagination {
-					margin: 18px 0;
-
-					ul {
-						margin-left: 0;
-						margin-bottom: 0;
-						vertical-align: middle;
-						width: 490px;
-						float: left;
-
-						li {
-							line-height: 18px;
-							display: inline-block;
-
-							a {
-								position: relative;
-								float: left;
-								line-height: 18px;
-								text-decoration: none;
-								background-color: #fff;
-								border: 1px solid #e0e9ee;
-								margin-left: -1px;
-								font-size: 14px;
-								padding: 9px 18px;
-								color: #333;
-							}
-
-							&.active {
-								a {
-									background-color: #fff;
-									color: #e1251b;
-									border-color: #fff;
-									cursor: default;
-								}
-							}
-
-							&.prev {
-								a {
-									background-color: #fafafa;
-								}
-							}
-
-							&.disabled {
-								a {
-									color: #999;
-									cursor: default;
-								}
-							}
-
-							&.dotted {
-								span {
-									margin-left: -1px;
-									position: relative;
-									float: left;
-									line-height: 18px;
-									text-decoration: none;
-									background-color: #fff;
-									font-size: 14px;
-									border: 0;
-									padding: 9px 18px;
-									color: #333;
-								}
-							}
-
-							&.next {
-								a {
-									background-color: #fafafa;
-								}
-							}
-						}
-					}
-
-					div {
-						color: #333;
-						font-size: 14px;
-						float: right;
-						width: 241px;
 					}
 				}
 			}
