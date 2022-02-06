@@ -27,7 +27,7 @@ export const reqGetGoodInfo = (skyId) =>
 		method: "GET"
 	});
 
-// 将产品添加到购物车中（获取更新某一产品的个数）  /api/cart/addToCart/{skuId}/{skuNum}  POST  参数：skuId、skuNum
+// 将产品添加到购物车中（获取更新某一产品的个数）  /api/cart/addToCart/{skuId}/{skuNum}  POST  参数：skuId、skuNum（正数增加，负数减少）
 export const reqAddOrUpdateShopCart = (skuId, skuNum) =>
 	requests({
 		url: `/cart/addToCart/${skuId}/${skuNum}`,
@@ -40,3 +40,19 @@ export const reqGetCartList = () =>
 		url: `/cart/cartList`,
 		method: "GET"
 	});
+
+// 删除购物车产品  /api/cart/deleteCart/{skuId}  DELETE  参数：skuId
+export const reqDeleteCartById = (skuId) => {
+	requests({
+		url: `/cart/deleteCart/${skuId}`,
+		method: "DELETE"
+	});
+};
+
+// 切换商品选中状态  /api/cart/checkCart/{skuId}/{isChecked}  GET  参数：skuId、isChecked（0：未选中，1：选中）
+export const reqUpdateCheckedById = (skuId, isChecked) => {
+	requests({
+		url: `/cart/checkCart/${skuId}/${isChecked}`,
+		method: "GET"
+	});
+};

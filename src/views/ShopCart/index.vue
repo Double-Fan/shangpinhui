@@ -21,6 +21,7 @@
 							type="checkbox"
 							name="chk_list"
 							:checked="cartInfo.isChecked == 1"
+							@change="updateChecked(cartInfo, $event)"
 						/>
 					</li>
 					<li class="cart-list-con2">
@@ -34,36 +35,59 @@
 						<span class="price">{{ cartInfo.skuPrice }}.00</span>
 					</li>
 					<li class="cart-list-con5">
-						<a href="javascript:void(0)" class="mins">-</a>
+						<a
+							href="javascript:void(0)"
+							class="mins"
+							@click="handler('minus', -1, cartInfo)"
+							>-</a
+						>
 						<input
 							autocomplete="off"
 							type="text"
-							:value="cartInfo.skuNum"
 							minnum="1"
 							class="itxt"
+							:value="cartInfo.skuNum"
+							@change="handler('change', $event.target.value * 1, cartInfo)"
 						/>
-						<a href="javascript:void(0)" class="plus">+</a>
+						<a
+							href="javascript:void(0)"
+							class="plus"
+							@click="handler('add', 1, cartInfo)"
+							>+</a
+						>
 					</li>
 					<li class="cart-list-con6">
 						<span class="sum">{{ cartInfo.skuNum * cartInfo.skuPrice }}</span>
 					</li>
 					<li class="cart-list-con7">
-						<a href="#none" class="sindelet">删除</a>
+						<a
+							href="javascript:void(0)"
+							class="sindelet"
+							@click="deleteCartById(cartInfo)"
+							>删除</a
+						>
 						<br />
-						<a href="#none">移到收藏</a>
+						<a href="javascript:void(0)">移到收藏</a>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div class="cart-tool">
 			<div class="select-all">
-				<input class="chooseAll" type="checkbox" :checked="isAllCheck"/>
+				<input
+					class="chooseAll"
+					type="checkbox"
+					:checked="isAllCheck && cartInfoList.length > 0"
+					@change="updateAllCartChecked"
+				/>
 				<span>全选</span>
 			</div>
 			<div class="option">
-				<a href="#none">删除选中的商品</a>
-				<a href="#none">移到我的关注</a>
-				<a href="#none">清除下柜商品</a>
+				<a href="javascript:void(0)" @click="deleteAllCheckedCart"
+					>删除选中的商品</a
+				>
+				<a href="javascript:void(0)">移到我的关注</a>
+				<a href="javascript:void(0)">清除下柜商品</a>
 			</div>
 			<div class="money-box">
 				<div class="chosed">已选择 <span>0</span>件商品</div>
@@ -81,6 +105,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import throttle from "lodash/throttle";
 
 export default {
 	name: "ShopCart",
@@ -92,7 +117,13 @@ export default {
 		},
 		// 购买产品的总价
 		totalPrice() {
-			return 999;
+			//累加操作
+			let filterArr = this.cartInfoList.filter((item) => {
+				return item.isChecked == 1;
+			});
+			return filterArr.reduce((pre, current) => {
+				return pre + current.skuNum * current.cartPrice;
+			}, 0);
 		},
 		// 是否全选
 		isAllCheck() {
@@ -103,6 +134,81 @@ export default {
 		// 获取个人购物车数据
 		getData() {
 			this.$store.dispatch("getCartList");
+		},
+		// 处理购物车中某一产品数量
+		handler: throttle(async function (type, skuNum, cartInfo) {
+			switch (type) {
+				case "add":
+					// 点击+，数量+1
+					break;
+				case "minus":
+					// 点击-，若原数量大于1，数量-1
+					if (cartInfo.skuNum <= 1) {
+						skuNum = 0;
+					}
+					break;
+				case "change":
+					if (isNaN(skuNum) || skuNum < 1) {
+						// 非法修改（汉字|负数），撤销操作
+						skuNum = 0;
+					} else {
+						// 正常修改（小数取整），数量修改
+						skuNum = parseInt(skuNum) - cartInfo.skuNum;
+					}
+					break;
+			}
+			try {
+				await this.$store.dispatch("addOrUpdateShopCart", {
+					skuId: cartInfo.skuId,
+					skuNum
+				});
+				this.getData();
+			} catch (error) {
+				//异常处理
+				console.log(error);
+			}
+		}, 1000),
+		// 删除购物车中某一产品
+		deleteCartById: throttle(async function (cartInfo) {
+			try {
+				await this.$store.dispatch("deleteCartById", cartInfo.skuId);
+				this.getData();
+			} catch (error) {
+				//异常处理
+				console.log(error);
+			}
+		}, 1000),
+		// 修改某个产品的勾选状态
+		async updateChecked(cartInfo, $event) {
+			try {
+				await this.$store.dispatch("updateCheckedById", {
+					skuId: cartInfo.skuId,
+					isChecked: $event.target.checked ? "1" : "0"
+				});
+				this.getData();
+			} catch (error) {
+				//异常处理
+				console.log(error);
+			}
+		},
+		// 删除所有选中的产品
+		async deleteAllCheckedCart() {
+			try {
+				await this.$store.dispatch("deleteAllCheckedCart");
+				this.getData();
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		// 修改全部产品的选中状态
+		async updateAllCartChecked($event) {
+			try {
+				let isChecked = $event.target.checked ? 1 : 0;
+				await this.$store.dispatch("updateAllCartChecked", isChecked);
+				this.getData();
+			} catch (error) {
+				console.log(error);
+			}
 		}
 	},
 	mounted() {

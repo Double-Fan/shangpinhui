@@ -25,10 +25,8 @@ const actions = {
 	async addOrUpdateShopCart({ commit }, { skuId, skuNum }) {
 		let result = await reqAddOrUpdateShopCart(skuId, skuNum);
 		if (result.code === 200) {
-			// 服务器加入购物车成功
-			return "ok";
+			return "加入购物车成功";
 		} else {
-			// 服务器加入购物车失败
 			return Promise.reject(new Error("加入购物车失败"));
 		}
 	}
