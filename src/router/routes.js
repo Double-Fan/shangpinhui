@@ -19,11 +19,13 @@ export default [
 		meta: { isShowFooter: true }
 	},
 	{
+		name: "login",
 		path: "/login",
 		component: Login,
 		meta: { isShowFooter: false }
 	},
 	{
+		name: "register",
 		path: "/register",
 		component: Register,
 		meta: { isShowFooter: false }

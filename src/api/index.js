@@ -13,11 +13,11 @@ export const reqGetBannerList = () => mockRequests.get(`/banner`);
 export const reqGetFloorList = () => mockRequests.get(`/floor`);
 
 // 获取搜索数据  /api/list  POST  参数：非必须
-export const reqGetSearchList = (params) =>
+export const reqGetSearchList = (data) =>
 	requests({
 		url: "/list",
 		method: "POST",
-		data: params
+		data
 	});
 
 // 获取商品详情  /api/item/{skuId}  GET  参数：skuId
@@ -42,17 +42,52 @@ export const reqGetCartList = () =>
 	});
 
 // 删除购物车产品  /api/cart/deleteCart/{skuId}  DELETE  参数：skuId
-export const reqDeleteCartById = (skuId) => {
+export const reqDeleteCartById = (skuId) =>
 	requests({
 		url: `/cart/deleteCart/${skuId}`,
 		method: "DELETE"
 	});
-};
 
 // 切换商品选中状态  /api/cart/checkCart/{skuId}/{isChecked}  GET  参数：skuId、isChecked（0：未选中，1：选中）
-export const reqUpdateCheckedById = (skuId, isChecked) => {
+export const reqUpdateCheckedById = (skuId, isChecked) =>
 	requests({
 		url: `/cart/checkCart/${skuId}/${isChecked}`,
 		method: "GET"
 	});
-};
+
+// 获取验证码  api/user/passport/sendCode/{phone}  GET  参数：phone
+export const reqGetCode = (phone) =>
+	requests({
+		url: `/user/passport/sendCode/${phone}`,
+		method: "GET"
+	});
+
+// 注册用户  /api/user/passport/register  POST  参数：phone、code、password
+export const reqUserRegister = (data) =>
+	requests({
+		url: "/user/passport/register",
+		method: "POST",
+		data
+	});
+
+// 用户登录  /api/user/passport/login  POST  参数：phone、password
+export const reqUserLogin = (data) =>
+	requests({
+		url: `/user/passport/login`,
+		method: "POST",
+		data
+	});
+
+// 获取用户信息  /api/user/passport/auth/getUserInfo
+export const reqGetUserInfo = () =>
+	requests({
+		url: `/user/passport/auth/getUserInfo`,
+		method: "GET"
+	});
+
+// 退出登录  /api/user/passport/logout  GET  
+export const reqLogout = () =>
+	requests({
+		url: `/user/passport/logout`,
+		method: "GET"
+	});
