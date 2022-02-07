@@ -6,6 +6,7 @@ import Search from "@/views/Search";
 import Detail from "@/views/Detail";
 import AddCartSuccess from "@/views/AddCartSuccess";
 import ShopCart from "@/views/ShopCart";
+import Trade from "@/views/Trade";
 
 /* 路由配置信息 */
 export default [
@@ -52,6 +53,12 @@ export default [
 		name: "shopCart",
 		path: "/shopCart",
 		component: ShopCart,
+		meta: { isShowFooter: true }
+	},
+	{
+		name: "trade",
+		path: "/trade",
+		component: Trade,
 		meta: { isShowFooter: true }
 	}
 ];
