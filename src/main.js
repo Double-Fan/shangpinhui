@@ -4,25 +4,35 @@ import router from "./router";
 import store from "./store";
 import "swiper/css/swiper.css";
 import "@/mock/mockServer";
+import * as API from "@/api";
 
 /* 全局组件 */
 import TypeNav from "@/components/TypeNav";
 import Carousel from "@/components/Carousel";
-import Pagination from "@/components/Pagination"
-
-
-Vue.config.productionTip = false;
+import Pagination from "@/components/Pagination";
+// 按需引入alement-ui
+import { Button, MessageBox } from "element-ui";
 
 // 注册全局组件
 Vue.component(TypeNav.name, TypeNav);
 Vue.component(Carousel.name, Carousel);
 Vue.component(Pagination.name, Pagination);
+// 全局注册element-ui
+Vue.component(Button.name, Button);
+// 原型注册element-ui
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
+
+Vue.config.productionTip = false;
 
 new Vue({
 	render: (h) => h(App),
 	router,
 	store,
 	beforeCreate() {
+		// 全局事件总线
 		Vue.prototype.$bus = this;
+		// 统一请求参数
+		Vue.prototype.$API = API;
 	}
 }).$mount("#app");

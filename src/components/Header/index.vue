@@ -18,14 +18,14 @@
 					</p>
 				</div>
 				<div class="typeList">
-					<a href="###">我的订单</a>
-					<a href="###">我的购物车</a>
-					<a href="###">我的尚品汇</a>
-					<a href="###">尚品汇会员</a>
-					<a href="###">企业采购</a>
-					<a href="###">关注尚品汇</a>
-					<a href="###">合作招商</a>
-					<a href="###">商家后台</a>
+					<router-link to="/center">我的订单</router-link>
+					<router-link to="/shopCart">我的购物车</router-link>
+					<a href="javascript:void(0)">我的尚品汇</a>
+					<a href="javascript:void(0)">尚品汇会员</a>
+					<a href="javascript:void(0)">企业采购</a>
+					<a href="javascript:void(0)">关注尚品汇</a>
+					<a href="javascript:void(0)">合作招商</a>
+					<a href="javascript:void(0)">商家后台</a>
 				</div>
 			</div>
 		</div>

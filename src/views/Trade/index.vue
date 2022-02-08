@@ -105,7 +105,9 @@
 			</div>
 		</div>
 		<div class="sub clearFix">
-			<router-link class="subBtn" to="/pay">提交订单</router-link>
+			<a class="subBtn" href="javascript:void(0)" @click="submitOrder"
+				>提交订单</a
+			>
 		</div>
 	</div>
 </template>
@@ -118,7 +120,9 @@ export default {
 	data() {
 		return {
 			// 搜集买家留言
-			msg: ""
+			msg: "",
+			// 订单号
+			orderId: ""
 		};
 	},
 	computed: {
@@ -136,6 +140,35 @@ export default {
 		changeDefault(address) {
 			this.addressInfo.forEach((item) => (item.isDefault = "0"));
 			address.isDefault = "1";
+		},
+		// 提交订单
+		async submitOrder() {
+			// 交易编号
+			let { tradeNo } = this.orderInfo;
+			let data = {
+				// 收件人姓名
+				consignee: this.userDefaultAddress.consignee,
+				// 收件人电话
+				consigneeTel: this.userDefaultAddress.phoneNum,
+				// 收件地址
+				deliveryAddress: this.userDefaultAddress.fullAddress,
+				// 支付方式 (ONLINE代表在线)
+				paymentWay: "ONLINE",
+				// 订单备注
+				orderComment: this.msg,
+				// 存储多个商品对象的数组
+				orderDetailList: this.orderInfo.detailArrayList
+			};
+			let result = await this.$API.reqSubmitOrder(tradeNo, data);
+			/* ps */
+			console.log(result);
+			if (result.code === 200) {
+				this.orderId = result.data;
+				// 成功，跳转支付页
+				this.$router.push(`/pay?orderId=${this.orderId}`);
+			} else {
+				alert(result.data);
+			}
 		}
 	},
 	mounted() {

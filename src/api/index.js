@@ -105,3 +105,25 @@ export const reqGetOrderInfo = () =>
 		url: `/order/auth/trade`,
 		method: "GET"
 	});
+
+// 提交订单  /api/order/auth/submitOrder?tradeNo={tradeNo}  POST  参数：tradeNo、consignee、consigneeTel、deliveryAddress、paymentWay、orderComment、OrderDetailList
+export const reqSubmitOrder = (tradeNo, data) =>
+	requests({
+		url: `/order/auth/submitOrder?tradeNo=${tradeNo}`,
+		method: "POST",
+		data
+	});
+
+// 获取支付信息  /api/payment/weixin/createNative/{orderId}  GET  参数：orderId
+export const reqGetPayInfo = (orderId) =>
+	requests({
+		url: `/payment/weixin/createNative/${orderId}`,
+		method: "GET"
+	});
+
+// 获取支付付订单状态  /api/payment/weixin/queryPayStatus/{orderId}  GET  参数：orderId
+export const reqGetPayStatus = (orderId) =>
+	requests({
+		url: `/payment/weixin/queryPayStatus/${orderId}`,
+		method: "GET"
+	});
