@@ -5,44 +5,81 @@
 			<h3>
 				注册新用户
 				<span class="go"
-					>我有账号，去 <a href="login.html" target="_blank">登陆</a>
+					>我有账号，去
+					<router-link href="javascript:void(0)" to="/login">登陆</router-link>
 				</span>
 			</h3>
 			<div class="content">
 				<label>手机号:</label>
-				<input type="text" placeholder="请输入你的手机号" v-model="phone" />
-				<span class="error-msg">错误提示信息</span>
+				<!-- name:给每一个表单元素添加一个名字，需要让vee-valadite区分验证的是哪一个表单元素 v-validate=验证规则 -->
+				<input
+					type="text"
+					placeholder="请输入你的手机号"
+					v-model="phone"
+					name="phone"
+					v-validate="{ required: true, regex: /^1\d{10}$/ }"
+					:class="{ invalid: errors.has('phone') }"
+				/>
+				<!-- 表单验证失败：提示错误信息 -->
+				<span class="error-msg">{{ errors.first("phone") }}</span>
 			</div>
 			<div class="content">
 				<label>验证码:</label>
-				<input type="text" placeholder="请输入验证码" v-model="code" />
+				<!-- name:给每一个表单元素添加一个名字，需要让vee-valadite区分验证的是哪一个表单元素 v-validate=验证规则 -->
+				<input
+					type="text"
+					placeholder="请输入验证码"
+					v-model="code"
+					name="code"
+					v-validate="{ required: true, regex: /^\d{6}$/ }"
+					:class="{ invalid: errors.has('code') }"
+				/>
 				<button style="width: 100px; height: 38px" @click="getCode">
 					获取验证码
 				</button>
-				<span class="error-msg">错误提示信息</span>
+				<!-- 表单验证失败：提示错误信息 -->
+				<span class="error-msg">{{ errors.first("code") }}</span>
 			</div>
 			<div class="content">
 				<label>登录密码:</label>
+				<!-- name:给每一个表单元素添加一个名字，需要让vee-valadite区分验证的是哪一个表单元素 v-validate=验证规则 -->
 				<input
 					type="password"
 					placeholder="请输入你的登录密码"
 					v-model="password"
+					name="password"
+					v-validate="{ required: true, regex: /^[0-9A-Za-z]{8,20}$/ }"
+					:class="{ invalid: errors.has('password') }"
 				/>
-				<span class="error-msg">错误提示信息</span>
+				<!-- 表单验证失败：提示错误信息 -->
+				<span class="error-msg">{{ errors.first("password") }}</span>
 			</div>
 			<div class="content">
 				<label>确认密码:</label>
+				<!-- name:给每一个表单元素添加一个名字，需要让vee-valadite区分验证的是哪一个表单元素 v-validate=验证规则 -->
 				<input
 					type="password"
 					placeholder="请输入确认密码"
 					v-model="password1"
+					name="password1"
+					v-validate="{ required: true, is: password }"
+					:class="{ invalid: errors.has('password1') }"
 				/>
-				<span class="error-msg">错误提示信息</span>
+				<!-- 表单验证失败：提示错误信息 -->
+				<span class="error-msg">{{ errors.first("password1") }}</span>
 			</div>
 			<div class="controls">
-				<input name="m1" type="checkbox" :checked="agree" />
+				<!-- name:给每一个表单元素添加一个名字，需要让vee-valadite区分验证的是哪一个表单元素 v-validate=验证规则 -->
+				<input
+					type="checkbox"
+					v-model="agree"
+					name="agree"
+					v-validate="{ required: true, tongyi: true }"
+					:class="{ invalid: errors.has('agree') }"
+				/>
 				<span>同意协议并注册《尚品汇用户协议》</span>
-				<span class="error-msg">错误提示信息</span>
+				<!-- 表单验证失败：提示错误信息 -->
+				<span class="error-msg">{{ errors.first("agree") }}</span>
 			</div>
 			<div class="btn">
 				<button @click="userRegister">完成注册</button>
@@ -96,18 +133,25 @@ export default {
 		},
 		// 用户注册
 		async userRegister() {
-			try {
+			//这里是vee-valadiate提供的一个方法，如果表单验证全部成功，返回布尔值真，
+			//如有有一个字段验证失败，返回布尔值false
+			const success = await this.$validator.validateAll();
+			console.log(success);
+			if (success) {
+				//进行判断：全部的字段，表单验证成功以后在发请求，
+				//只要有一个字段验证没有通过，补发请求
+				//携带参数的：phone code password
 				const { phone, code, password, password1 } = this;
-				
-				await this.$store.dispatch("userRegister", {
-					phone,
-					code,
-					password
-				});
-				// 成功，跳转到登录
-				this.$router.push("/login");
-			} catch (error) {
-				alert(error.message);
+				//不做表单验证[稍微验证一下]
+				try {
+					//注册成功
+					await this.$store.dispatch("userRegister", { phone, code, password });
+					//跳转到登录页面
+					this.$router.push("/login");
+				} catch (error) {
+					//注册失败
+					alert(error.message);
+				}
 			}
 		}
 	}

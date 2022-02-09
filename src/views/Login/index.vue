@@ -91,8 +91,10 @@ export default {
 			try {
 				const { phone, password } = this;
 				await this.$store.dispatch("userLogin", { phone, password });
-				// 成功，跳转到home首页
-				this.$router.push("/home");
+				// 成功，判断路由是否携带query信息，没有跳转/home
+				console.log(this.$route.query.redirect);
+				let toPath = this.$route.query.redirect || "/home";
+				this.$router.push(toPath);
 			} catch (error) {
 				alert(error.message);
 			}

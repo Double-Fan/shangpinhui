@@ -1,19 +1,3 @@
-// 引入一级路由组件
-import Home from "@/views/Home";
-import Login from "@/views/Login";
-import Register from "@/views/Register";
-import Search from "@/views/Search";
-import Detail from "@/views/Detail";
-import AddCartSuccess from "@/views/AddCartSuccess";
-import ShopCart from "@/views/ShopCart";
-import Trade from "@/views/Trade";
-import Pay from "@/views/Pay";
-import PaySuccess from "@/views/PaySuccess";
-import Center from "@/views/Center";
-// 引入二级路由组件
-import MyOrder from "@/views/Center/MyOrder";
-import GroupOrder from "@/views/Center/GroupOrder";
-
 // 路由配置信息
 export default [
 	{
@@ -22,78 +6,94 @@ export default [
 	},
 	{
 		path: "/home",
-		component: Home,
+		component: () => import("@/views/Home"),
 		meta: { isShowFooter: true }
 	},
 	{
 		name: "login",
 		path: "/login",
-		component: Login,
+		component: () => import("@/views/Login"),
 		meta: { isShowFooter: false }
 	},
 	{
 		name: "register",
 		path: "/register",
-		component: Register,
+		component: () => import("@/views/Register"),
 		meta: { isShowFooter: false }
 	},
 	{
 		name: "search",
 		path: "/search/:keyword?",
-		component: Search,
+		component: () => import("@/views/Search"),
 		meta: { isShowFooter: true }
 	},
 	{
 		name: "detail",
 		path: "/detail/:skuId",
-		component: Detail,
+		component: () => import("@/views/Detail"),
 		meta: { isShowFooter: true }
 	},
 	{
 		name: "addCartSuccess",
 		path: "/addCartSuccess",
-		component: AddCartSuccess,
+		component: () => import("@/views/AddCartSuccess"),
 		meta: { isShowFooter: true }
 	},
 	{
 		name: "shopCart",
 		path: "/shopCart",
-		component: ShopCart,
+		component: () => import("@/views/ShopCart"),
 		meta: { isShowFooter: true }
 	},
 	{
 		name: "trade",
 		path: "/trade",
-		component: Trade,
-		meta: { isShowFooter: true }
+		component: () => import("@/views/Trade"),
+		meta: { isShowFooter: true },
+		// 路由独享守卫
+		beforeEnter(to, from, next) {
+			if (from.path == "/shopCart") {
+				next();
+			} else {
+				next(false);
+			}
+		}
 	},
 	{
 		name: "pay",
 		path: "/pay",
-		component: Pay,
-		meta: { isShowFooter: true }
+		component: () => import("@/views/Pay"),
+		meta: { isShowFooter: true },
+		// 路由独享守卫
+		beforeEnter(to, from, next) {
+			if (from.path == "/trade") {
+				next();
+			} else {
+				next(false);
+			}
+		}
 	},
 	{
 		name: "paySuccess",
 		path: "/paySuccess",
-		component: PaySuccess,
+		component: () => import("@/views/PaySuccess"),
 		meta: { isShowFooter: true }
 	},
 	{
 		name: "center",
 		path: "/center",
 		redirect: "/center/myOrder",
-		component: Center,
+		component: () => import("@/views/Center"),
 		meta: { isShowFooter: true },
 		// 二级路由组件
 		children: [
 			{
 				path: "myOrder",
-				component: MyOrder
+				component: () => import("@/views/Center/MyOrder")
 			},
 			{
 				path: "groupOrder",
-				component: GroupOrder
+				component: () => import("@/views/Center/GroupOrder")
 			}
 		]
 	}

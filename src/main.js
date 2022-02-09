@@ -5,8 +5,12 @@ import store from "./store";
 import "swiper/css/swiper.css";
 import "@/mock/mockServer";
 import * as API from "@/api";
+import VueLazyload from "vue-lazyload";
+import ljz from "@/assets/images/1.gif";
+// 表单校验插件
+import "@/plugins/validate";
 
-/* 全局组件 */
+// 全局组件
 import TypeNav from "@/components/TypeNav";
 import Carousel from "@/components/Carousel";
 import Pagination from "@/components/Pagination";
@@ -24,6 +28,11 @@ Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
 
 Vue.config.productionTip = false;
+// vue 图片懒加载
+Vue.use(VueLazyload, {
+	// 懒加载图片
+	loading: ljz
+});
 
 new Vue({
 	render: (h) => h(App),

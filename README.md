@@ -15,12 +15,15 @@
 - iconfont：自定义图标
 - element-ui：UI 组件库
 - qrcode：二维码
+- Vue-Lazyload：图片懒加载
+- vee-validate@2：表单验证
 # 目录设计
 ```
 |-- src
   |-- api               ajax 请求
   |-- components        非路由组件
   |-- mock              模拟数据
+  |-- plugins           插件相关
   |-- router            路由相关
   |-- store             vuex相关
   |-- utils             工具函数模块

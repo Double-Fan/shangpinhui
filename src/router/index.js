@@ -58,7 +58,7 @@ router.beforeEach(async (to, from, next) => {
 			} else {
 				// 登录但包含用户信息
 				try {
-					// 获取用户信息 
+					// 获取用户信息
 					await store.dispatch("getUserInfo");
 					next();
 				} catch (error) {
@@ -71,7 +71,19 @@ router.beforeEach(async (to, from, next) => {
 			}
 		}
 	} else {
-		next();
+		// 未登录，不能去交易相关、支付相关、个人中心
+		let toPath = to.path;
+		console.log(toPath);
+		if (
+			toPath.indexOf("trade") !== -1 ||
+			toPath.indexOf("pay") !== -1 ||
+			toPath.indexOf("center") !== -1
+		) {
+			// 把未登录时候要去而没去成的信息，存储于地址栏中，再登录了就直接进入
+			next("/login?redirect=" + toPath);
+		} else {
+			next();
+		}
 	}
 });
 

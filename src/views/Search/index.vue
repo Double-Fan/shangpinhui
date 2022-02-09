@@ -87,7 +87,8 @@
 								<div class="list-wrap">
 									<div class="p-img">
 										<router-link :to="`/detail/${good.id}`">
-											<img :src="good.defaultImg" />
+											<!-- 使用vue-lazyload -->
+											<img v-lazy="good.defaultImg" />
 										</router-link>
 									</div>
 									<div class="price">
