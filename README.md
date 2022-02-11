@@ -15,7 +15,7 @@
 - Center（MyOrder、GroupOrder……）：个人中心（我的订单、组团订单……）。
 # 技术点
 - Vue
-- Vue Router：路由跳转、多级路由、路由元信息、导航守卫……
+- Vue Router：路由跳转、多级路由、路由元信息、导航守卫、路由懒加载……
 - Vuex：进行数据管理
 - axios：与后端进行数据交互
 - mockjs：模拟后台数据接口
