@@ -44,6 +44,6 @@
   |-- store             vuex相关
   |-- utils             工具函数模块
   |-- views             路由组件
-|-- APP.vue
-|-- main.js
+  |-- APP.vue
+  |-- main.js
 ```
